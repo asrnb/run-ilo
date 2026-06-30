@@ -1,0 +1,15 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+  /* Monospace label for race data — dates, gun starts, distances */
+  .data-label {
+    @apply font-mono text-xs tracking-[0.15em] uppercase text-predawn-400;
+  }
+
+  /* Left-edge accent: the "start line" mark used on featured sections */
+  .startline {
+    @apply border-l-4 border-sunrise pl-4;
+  }
+}
