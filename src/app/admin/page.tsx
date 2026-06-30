@@ -1,31 +1,63 @@
 import Link from 'next/link'
-import { getAllEvents } from '@/lib/events'
+import { redirect } from 'next/navigation'
+import { getAllEvents, isSupabaseConfigured } from '@/lib/events'
+import { getSessionUser, checkIsAdmin } from '@/lib/auth'
 import AdminEventList from '@/components/AdminEventList'
+import LogoutButton from '@/components/LogoutButton'
 
-// Always fetch fresh — do not cache admin data
 export const dynamic = 'force-dynamic'
 
 export default async function AdminPage() {
+  let userEmail: string | null = null
+
+  if (isSupabaseConfigured()) {
+    const user = await getSessionUser()
+    if (!user) redirect('/admin/login')
+
+    const admin = await checkIsAdmin(user.id)
+    if (!admin) {
+      return (
+        <main className="min-h-screen bg-predawn-900 flex items-center justify-center px-6">
+          <div className="text-center">
+            <p className="text-predawn-300 mb-4">
+              {user.email} is not authorized as an admin.
+            </p>
+            <LogoutButton />
+          </div>
+        </main>
+      )
+    }
+    userEmail = user.email ?? null
+  }
+
   const events = await getAllEvents()
 
   return (
     <main className="min-h-screen bg-predawn-900 px-6 py-12 max-w-3xl mx-auto">
-      {/* TODO: protect this page with Supabase Auth before public deploy */}
       <div className="flex justify-between items-start mb-10">
         <div>
-          <Link href="/" className="data-label text-predawn-500 hover:text-white transition-colors">
+          <Link
+            href="/"
+            className="data-label text-predawn-500 hover:text-white transition-colors"
+          >
             ← run.ilo
           </Link>
           <h1 className="font-display text-2xl font-bold text-white mt-3">
             Admin
           </h1>
+          {userEmail && (
+            <p className="data-label text-predawn-500 mt-1">{userEmail}</p>
+          )}
         </div>
-        <Link
-          href="/admin/new"
-          className="bg-sunrise text-predawn-900 font-display font-semibold text-sm px-4 py-2 rounded-xl hover:bg-sunrise/90 transition-colors"
-        >
-          + New Race
-        </Link>
+        <div className="flex gap-4 items-center">
+          {isSupabaseConfigured() && <LogoutButton />}
+          <Link
+            href="/admin/new"
+            className="bg-sunrise text-predawn-900 font-display font-semibold text-sm px-4 py-2 rounded-xl hover:bg-sunrise/90 transition-colors"
+          >
+            + New Race
+          </Link>
+        </div>
       </div>
 
       <AdminEventList events={events} />
