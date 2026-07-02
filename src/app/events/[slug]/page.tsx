@@ -14,7 +14,13 @@ export async function generateMetadata({
 }: EventPageProps): Promise<Metadata> {
   const event = await getEventBySlug(params.slug)
   if (!event) return {}
-  return { title: `${event.name} — run.ilo` }
+  const title = `${event.name} — run.ilo`
+  const description = `${formatDate(event.date)} · ${event.location} · Gun start ${formatGunStart(event.gunStart)}`
+  return {
+    title,
+    description,
+    openGraph: { title, description, type: 'article' },
+  }
 }
 
 export default async function EventPage({ params }: EventPageProps) {

@@ -52,7 +52,7 @@ connect Supabase (see `README.md` → "Connect Supabase").
       **open** by default — do not skip this).
 - [ ] Real Supabase env vars set in the host (Vercel project settings).
 - [ ] Seeded with real upcoming Iloilo races so the directory isn't empty.
-- [ ] Open Graph images render correctly when a race link is shared.
+- [x] Open Graph images render correctly when a race link is shared.
 
 ## Style
 
