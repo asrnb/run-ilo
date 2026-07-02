@@ -76,17 +76,13 @@ than reinventing them.
 ## State of the project
 
 **Done (Phase 1):** directory, date/distance filters, race detail + map, public
-submission → moderation queue, basic admin CRUD, Postgres schema with RLS.
+submission → moderation queue, basic admin CRUD, Postgres schema with RLS,
+`/admin` protected with Supabase Auth, dynamic Open Graph race-card images.
 
 **Next, in order:**
-1. **Protect `/admin`** — Supabase Auth + an `admins` table + a route guard /
-   middleware. **This is the top priority before any public deploy.** Right now
-   `/admin` and the admin API routes are open to anyone.
-2. Open Graph race-card images (shared links should render cleanly on Facebook —
-   that's the main local marketing channel).
-3. Email confirmations on submission + approval (Resend).
-4. Banner image uploads (Supabase Storage), organizer records.
-5. Phase 3: saved/"interested" races, race-day reminders, `.ics` export.
+1. Email confirmations on submission + approval (Resend).
+2. Banner image uploads (Supabase Storage), organizer records.
+3. Phase 3: saved/"interested" races, race-day reminders, `.ics` export.
 
 ## Guardrails
 
