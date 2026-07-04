@@ -1,176 +1,121 @@
 import { ImageResponse } from 'next/og'
-import { getEventBySlug } from '@/lib/events'
 import { formatDate, formatGunStart, formatDistance } from '@/lib/format'
-import { loadOgFonts } from '@/lib/og-font'
 
+export const runtime = 'edge'
+export const alt = 'Race event'
 export const size = { width: 1200, height: 630 }
 export const contentType = 'image/png'
-export const alt = 'Race card — run.ilo'
 
-const DISPLAY = 'Archivo'
-const BODY = 'Plus Jakarta Sans'
-const MONO = 'JetBrains Mono'
-
-interface Props {
-  params: { slug: string }
+const DISTANCE_COLORS: Record<number, string> = {
+  5:  '#16c25e',
+  10: '#4a90e2',
+  21: '#f97057',
+  42: '#ffb347',
 }
 
-export default async function Image({ params }: Props) {
-  const event = await getEventBySlug(params.slug)
-  const fonts = (await loadOgFonts()) ?? undefined
+async function getEvent(slug: string) {
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL
+  const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+  if (!url || !key) return null
+  const res = await fetch(
+    `${url}/rest/v1/race_events?slug=eq.${slug}&status=eq.published&select=name,date,gun_start,distances,location`,
+    { headers: { apikey: key, Authorization: `Bearer ${key}` } },
+  )
+  const rows = await res.json()
+  return rows?.[0] ?? null
+}
 
-  if (!event) {
+export default async function Image({ params }: { params: { slug: string } }) {
+  const row = await getEvent(params.slug)
+
+  if (!row) {
     return new ImageResponse(
-      (
-        <div
-          style={{
-            width: '100%',
-            height: '100%',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            background: '#0d0e2e',
-            fontSize: 72,
-            fontWeight: 700,
-            color: 'white',
-            fontFamily: fonts ? DISPLAY : 'sans-serif',
-          }}
-        >
-          run<span style={{ color: '#f97057' }}>.</span>ilo
-        </div>
-      ),
-      { ...size, fonts },
+      <div style={{ background: '#0e0b08', width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <span style={{ color: '#a87f60', fontSize: 32 }}>run.ilo</span>
+      </div>,
+      { ...size },
     )
   }
 
+  const name: string = row.name
+  const distances: number[] = row.distances
+
   return new ImageResponse(
-    (
-      <div
-        style={{
-          width: '100%',
-          height: '100%',
-          display: 'flex',
-          flexDirection: 'column',
-          justifyContent: 'space-between',
-          padding: '72px',
-          background: 'linear-gradient(135deg, #0d0e2e 0%, #171870 100%)',
-          fontFamily: fonts ? BODY : 'sans-serif',
-        }}
-      >
-        <div
-          style={{
-            display: 'flex',
-            flexDirection: 'column',
-            borderLeft: '8px solid #f97057',
-            paddingLeft: '32px',
-          }}
-        >
+    <div
+      style={{
+        background: '#0e0b08',
+        width: '100%',
+        height: '100%',
+        display: 'flex',
+        flexDirection: 'column',
+        padding: '64px',
+        fontFamily: 'sans-serif',
+      }}
+    >
+      {/* Glow */}
+      <div style={{
+        position: 'absolute', bottom: 0, right: 0,
+        width: 500, height: 500,
+        background: 'radial-gradient(circle, rgba(22,194,94,0.1) 0%, transparent 70%)',
+        display: 'flex',
+      }} />
+
+      {/* run.ilo wordmark */}
+      <div style={{ display: 'flex', alignItems: 'baseline', marginBottom: 'auto' }}>
+        <span style={{ color: 'white', fontSize: 28, fontWeight: 700 }}>run</span>
+        <span style={{ color: '#f97057', fontSize: 28, fontWeight: 700 }}>.</span>
+        <span style={{ color: '#16c25e', fontSize: 28, fontWeight: 700 }}>ilo</span>
+      </div>
+
+      {/* Race name */}
+      <div style={{
+        color: 'white',
+        fontSize: name.length > 30 ? 56 : 72,
+        fontWeight: 800,
+        lineHeight: 1.1,
+        marginBottom: 20,
+        maxWidth: 900,
+      }}>
+        {name}
+      </div>
+
+      {/* Date + location */}
+      <div style={{ color: '#a87f60', fontSize: 22, marginBottom: 36, display: 'flex', gap: 12 }}>
+        <span>{formatDate(row.date)}</span>
+        <span style={{ color: '#473520' }}>·</span>
+        <span>{row.location}</span>
+      </div>
+
+      {/* Distances + gun start */}
+      <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+        {distances.map((d) => (
           <div
+            key={d}
             style={{
-              display: 'flex',
-              fontFamily: fonts ? MONO : 'monospace',
-              fontSize: 26,
-              letterSpacing: 4,
-              color: '#f97057',
-              textTransform: 'uppercase',
-              marginBottom: 18,
-            }}
-          >
-            {formatDate(event.date)}
-          </div>
-          <div
-            style={{
-              display: 'flex',
-              fontFamily: fonts ? DISPLAY : 'sans-serif',
-              fontSize: 66,
+              background: '#1c1610',
+              border: `1px solid ${DISTANCE_COLORS[d]}40`,
+              color: DISTANCE_COLORS[d],
+              padding: '8px 18px',
+              borderRadius: 8,
+              fontSize: 17,
               fontWeight: 700,
-              color: 'white',
-              lineHeight: 1.15,
-              maxWidth: 980,
-            }}
-          >
-            {event.name}
-          </div>
-          <div
-            style={{
+              letterSpacing: '0.05em',
               display: 'flex',
-              fontSize: 28,
-              color: '#93a4ff',
-              marginTop: 20,
             }}
           >
-            {event.location}
+            {formatDistance(d)}
           </div>
-        </div>
-
-        <div style={{ display: 'flex', alignItems: 'center', gap: 24 }}>
-          <div
-            style={{
-              display: 'flex',
-              flexDirection: 'column',
-            }}
-          >
-            <div
-              style={{
-                display: 'flex',
-                fontFamily: fonts ? MONO : 'monospace',
-                fontSize: 20,
-                letterSpacing: 3,
-                textTransform: 'uppercase',
-                color: '#6677ef',
-                marginBottom: 8,
-              }}
-            >
-              Gun Start
-            </div>
-            <div
-              style={{
-                display: 'flex',
-                fontFamily: fonts ? MONO : 'monospace',
-                fontSize: 42,
-                fontWeight: 700,
-                color: 'white',
-              }}
-            >
-              {formatGunStart(event.gunStart)}
-            </div>
-          </div>
-
-          <div style={{ display: 'flex', gap: 12, marginLeft: 32 }}>
-            {event.distances.map((d) => (
-              <div
-                key={d}
-                style={{
-                  display: 'flex',
-                  fontFamily: fonts ? MONO : 'monospace',
-                  fontSize: 24,
-                  fontWeight: 700,
-                  padding: '10px 20px',
-                  borderRadius: 12,
-                  border: `2px solid ${d === 42 ? '#ffb347' : '#3030b8'}`,
-                  color: d === 42 ? '#ffb347' : '#93a4ff',
-                }}
-              >
-                {formatDistance(d)}
-              </div>
-            ))}
-          </div>
-
-          <div
-            style={{
-              display: 'flex',
-              fontFamily: fonts ? DISPLAY : 'sans-serif',
-              fontSize: 30,
-              fontWeight: 700,
-              color: 'white',
-              marginLeft: 'auto',
-            }}
-          >
-            run<span style={{ color: '#f97057' }}>.</span>ilo
-          </div>
+        ))}
+        <div style={{ marginLeft: 'auto', display: 'flex', flexDirection: 'column', alignItems: 'flex-end' }}>
+          <span style={{ color: '#473520', fontSize: 13, fontWeight: 600, letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: 4 }}>
+            GUN START
+          </span>
+          <span style={{ color: '#f97057', fontSize: 44, fontWeight: 700, fontFamily: 'monospace', lineHeight: 1 }}>
+            {formatGunStart(row.gun_start)}
+          </span>
         </div>
       </div>
-    ),
-    { ...size, fonts },
+    </div>,
+    { ...size },
   )
 }

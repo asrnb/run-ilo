@@ -1,6 +1,5 @@
 import type { Metadata } from 'next'
 import { Archivo, Plus_Jakarta_Sans, JetBrains_Mono } from 'next/font/google'
-import { siteUrl } from '@/lib/site'
 import './globals.css'
 
 const archivo = Archivo({
@@ -18,22 +17,16 @@ const jetbrains = JetBrains_Mono({
   variable: '--font-jetbrains',
 })
 
-const description =
-  'Community directory of fun runs and marathons in Iloilo City, Philippines.'
-
 export const metadata: Metadata = {
-  metadataBase: new URL(siteUrl()),
   title: 'run.ilo — Iloilo Race Directory',
-  description,
+  description: 'Community directory of fun runs and marathons in Iloilo City, Philippines.',
+  metadataBase: new URL(
+    process.env.NEXT_PUBLIC_SITE_URL ?? 'https://run-ilo.vercel.app'
+  ),
   openGraph: {
-    title: 'run.ilo — Iloilo Race Directory',
-    description,
     siteName: 'run.ilo',
     locale: 'en_PH',
     type: 'website',
-  },
-  twitter: {
-    card: 'summary_large_image',
   },
 }
 
@@ -45,7 +38,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${archivo.variable} ${jakarta.variable} ${jetbrains.variable} bg-predawn-900 text-white font-body min-h-screen antialiased`}
+        className={`${archivo.variable} ${jakarta.variable} ${jetbrains.variable} bg-white text-gray-900 font-body min-h-screen antialiased`}
       >
         {children}
       </body>

@@ -27,5 +27,6 @@ export function toSlug(name: string, date: string): string {
     .replace(/[^a-z0-9]+/g, '-')
     .replace(/^-|-$/g, '')
   const year = date.split('-')[0] || String(new Date().getFullYear())
-  return `${base}-${year}`
+  const suffix = Math.random().toString(36).slice(2, 6)
+  return `${base}-${year}-${suffix}`
 }

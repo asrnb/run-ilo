@@ -1,5 +1,5 @@
 import { SAMPLE_EVENTS } from '@/data/sample-events'
-import { RaceEvent, RaceEventRow, RaceStatus } from './types'
+import { RaceEvent, RaceEventRow, RaceRoute, RaceStatus } from './types'
 import { createAnonClient, createServiceClient } from './supabase/server'
 
 export function isSupabaseConfigured(): boolean {
@@ -20,6 +20,7 @@ function fromRow(row: RaceEventRow): RaceEvent {
     location: row.location,
     lat: row.lat,
     lng: row.lng,
+    route: row.route ?? undefined,
     registrationUrl: row.registration_url ?? undefined,
     description: row.description ?? undefined,
     status: row.status,
@@ -91,6 +92,7 @@ export async function createEvent(
       lng: payload.lng,
       registration_url: payload.registrationUrl ?? null,
       description: payload.description ?? null,
+      route: payload.route ?? null,
       status: payload.status,
       source: payload.source,
     })
@@ -103,11 +105,23 @@ export async function createEvent(
 export async function updateEventStatus(
   id: string,
   status: RaceStatus,
+  route?: RaceRoute,
 ): Promise<void> {
+  if (!isSupabaseConfigured()) return
+  const patch: Record<string, unknown> = { status }
+  if (route !== undefined) patch.route = route.length > 1 ? route : null
+  const { error } = await createServiceClient()
+    .from('race_events')
+    .update(patch)
+    .eq('id', id)
+  if (error) throw error
+}
+
+export async function deleteEvent(id: string): Promise<void> {
   if (!isSupabaseConfigured()) return
   const { error } = await createServiceClient()
     .from('race_events')
-    .update({ status })
+    .delete()
     .eq('id', id)
   if (error) throw error
 }

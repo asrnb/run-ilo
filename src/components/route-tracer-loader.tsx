@@ -1,10 +1,10 @@
 import dynamic from 'next/dynamic'
 
-const EventMapLoader = dynamic(() => import('./event-map'), {
+const RouteTracerLoader = dynamic(() => import('./route-tracer'), {
   ssr: false,
   loading: () => (
     <div className="h-[320px] w-full rounded-xl bg-gray-100 animate-pulse" />
   ),
 })
 
-export default EventMapLoader
+export default RouteTracerLoader

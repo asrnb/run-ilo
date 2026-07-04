@@ -11,18 +11,19 @@ export async function POST(req: NextRequest) {
       gunStart: body.gunStart,
       distances: body.distances,
       location: body.location,
-      lat: Number(body.lat),
-      lng: Number(body.lng),
+      lat: body.lat ? Number(body.lat) : 10.6966,
+      lng: body.lng ? Number(body.lng) : 122.5695,
       registrationUrl: body.registrationUrl || undefined,
       description: body.description || undefined,
+      route: body.route || undefined,
       status: 'pending',
       source: 'submission',
     })
     return NextResponse.json({ ok: true, event })
-  } catch (err) {
-    return NextResponse.json(
-      { ok: false, error: String(err) },
-      { status: 500 },
-    )
+  } catch (err: unknown) {
+    const message = err instanceof Error
+      ? err.message
+      : (err as { message?: string })?.message ?? JSON.stringify(err)
+    return NextResponse.json({ ok: false, error: message }, { status: 500 })
   }
 }

@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { createEvent, updateEventStatus, isSupabaseConfigured } from '@/lib/events'
+import { createEvent, updateEventStatus, deleteEvent, isSupabaseConfigured } from '@/lib/events'
 import { getSessionUser, checkIsAdmin } from '@/lib/auth'
-import { RaceStatus } from '@/lib/types'
+import { RaceRoute, RaceStatus } from '@/lib/types'
 
 async function requireAdmin(): Promise<boolean> {
   if (!isSupabaseConfigured()) return true // demo mode — no auth
@@ -36,13 +36,26 @@ export async function POST(req: NextRequest) {
   }
 }
 
+export async function DELETE(req: NextRequest) {
+  if (!(await requireAdmin())) {
+    return NextResponse.json({ ok: false, error: 'Unauthorized' }, { status: 401 })
+  }
+  try {
+    const { id } = await req.json()
+    await deleteEvent(id)
+    return NextResponse.json({ ok: true })
+  } catch (err) {
+    return NextResponse.json({ ok: false, error: String(err) }, { status: 500 })
+  }
+}
+
 export async function PATCH(req: NextRequest) {
   if (!(await requireAdmin())) {
     return NextResponse.json({ ok: false, error: 'Unauthorized' }, { status: 401 })
   }
   try {
-    const { id, status } = await req.json()
-    await updateEventStatus(id, status as RaceStatus)
+    const { id, status, route } = await req.json()
+    await updateEventStatus(id, status as RaceStatus, route as RaceRoute | undefined)
     return NextResponse.json({ ok: true })
   } catch (err) {
     return NextResponse.json({ ok: false, error: String(err) }, { status: 500 })
