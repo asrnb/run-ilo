@@ -121,10 +121,12 @@ export async function updateEventStatus(
   id: string,
   status: RaceStatus,
   route?: RaceRoute,
+  bannerUrl?: string,
 ): Promise<void> {
   if (!isSupabaseConfigured()) return
   const patch: Record<string, unknown> = { status }
   if (route !== undefined) patch.route = route.length > 1 ? route : null
+  if (bannerUrl !== undefined) patch.banner_url = bannerUrl
   const { error } = await createServiceClient()
     .from('race_events')
     .update(patch)

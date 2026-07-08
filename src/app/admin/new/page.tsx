@@ -6,6 +6,7 @@ import Link from 'next/link'
 import { toSlug } from '@/lib/format'
 import { parseGPX } from '@/lib/gpx'
 import RouteTracerLoader from '@/components/route-tracer-loader'
+import BannerUpload from '@/components/BannerUpload'
 
 const DISTANCES = [5, 10, 21, 42]
 const DISTANCE_LABELS: Record<number, string> = {
@@ -14,7 +15,6 @@ const DISTANCE_LABELS: Record<number, string> = {
 
 const INPUT = 'w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-gray-900 placeholder:text-gray-400 focus:border-gray-400 focus:outline-none transition-colors'
 
-// Iloilo City center as default map center
 const ILOILO: [number, number] = [10.6966, 122.5695]
 
 export default function AdminNewPage() {
@@ -26,6 +26,7 @@ export default function AdminNewPage() {
   })
   const [route, setRoute] = useState<[number, number][]>([])
   const [routeMode, setRouteMode] = useState<'none' | 'gpx' | 'trace'>('none')
+  const [bannerUrl, setBannerUrl] = useState('')
   const [state, setState] = useState<'idle' | 'loading' | 'error'>('idle')
 
   function toggleDistance(d: number) {
@@ -46,7 +47,6 @@ export default function AdminNewPage() {
       const parsed = parseGPX(text)
       if (parsed.length > 0) {
         setRoute(parsed)
-        // Set lat/lng to the first point as start
         setForm((f) => ({ ...f, lat: String(parsed[0][0]), lng: String(parsed[0][1]) }))
       }
     }
@@ -56,16 +56,18 @@ export default function AdminNewPage() {
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     setState('loading')
+    const slug = toSlug(form.name, form.date)
     try {
       const res = await fetch('/api/events', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           ...form,
-          slug: toSlug(form.name, form.date),
+          slug,
           lat: parseFloat(form.lat),
           lng: parseFloat(form.lng),
           route: route.length > 1 ? route : undefined,
+          bannerUrl: bannerUrl || undefined,
         }),
       })
       const json = await res.json()
@@ -77,6 +79,8 @@ export default function AdminNewPage() {
   const mapCenter: [number, number] = form.lat && form.lng
     ? [parseFloat(form.lat), parseFloat(form.lng)]
     : ILOILO
+
+  const slug = form.name && form.date ? toSlug(form.name, form.date) : 'race-banner'
 
   return (
     <main className="min-h-screen bg-white px-6 py-12 max-w-xl mx-auto">
@@ -137,6 +141,12 @@ export default function AdminNewPage() {
             <input required type="number" step="any" value={form.lng} onChange={(e) => setForm((f) => ({ ...f, lng: e.target.value }))}
               placeholder="122.5695" className={`${INPUT} font-mono`} />
           </div>
+        </div>
+
+        {/* Banner */}
+        <div>
+          <label className="data-label block mb-2">Banner Image (optional)</label>
+          <BannerUpload slug={slug} currentUrl={bannerUrl} onUploaded={setBannerUrl} />
         </div>
 
         {/* Route */}

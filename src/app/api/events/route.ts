@@ -28,6 +28,7 @@ export async function POST(req: NextRequest) {
       lng: Number(body.lng),
       registrationUrl: body.registrationUrl || undefined,
       description: body.description || undefined,
+      bannerUrl: body.bannerUrl || undefined,
       status: 'published',
       source: 'admin',
     })
@@ -55,9 +56,9 @@ export async function PATCH(req: NextRequest) {
     return NextResponse.json({ ok: false, error: 'Unauthorized' }, { status: 401 })
   }
   try {
-    const { id, status, route } = await req.json()
+    const { id, status, route, bannerUrl } = await req.json()
     const event = await getEventById(id)
-    await updateEventStatus(id, status as RaceStatus, route as RaceRoute | undefined)
+    await updateEventStatus(id, status as RaceStatus, route as RaceRoute | undefined, bannerUrl as string | undefined)
     if (event?.organizerEmail && (status === 'published' || status === 'rejected')) {
       await sendApprovalEmail(event.organizerEmail, event.name, status as 'published' | 'rejected')
     }
