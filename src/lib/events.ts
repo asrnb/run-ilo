@@ -138,3 +138,21 @@ export async function deleteEvent(id: string): Promise<void> {
     .eq('id', id)
   if (error) throw error
 }
+
+export async function getJoinCount(raceEventId: string): Promise<number> {
+  if (!isSupabaseConfigured()) return 0
+  const { count, error } = await createAnonClient()
+    .from('race_joins')
+    .select('*', { count: 'exact', head: true })
+    .eq('race_event_id', raceEventId)
+  if (error) return 0
+  return count ?? 0
+}
+
+export async function addJoin(raceEventId: string): Promise<void> {
+  if (!isSupabaseConfigured()) return
+  const { error } = await createServiceClient()
+    .from('race_joins')
+    .insert({ race_event_id: raceEventId })
+  if (error) throw error
+}

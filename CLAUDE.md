@@ -1,8 +1,8 @@
 # run.ilo — project brief for Claude Code
 
-A community directory of runs, fun runs, and marathons in **Iloilo City,
-Philippines**. Users browse upcoming races; organizers submit races that an admin
-moderates before they go live.
+A community platform for runs, fun runs, and marathons in **Iloilo City,
+Philippines**. Runners browse upcoming races and follow the community feed.
+Organizers submit races and post updates. An admin moderates before anything goes live.
 
 ## Stack
 
@@ -31,17 +31,21 @@ three Supabase keys, and run `supabase/migrations/0001_init.sql` then
 | Path | Role |
 | --- | --- |
 | `src/app/page.tsx` | Home: hero + filters + race list (server component) |
-| `src/app/events/[slug]/page.tsx` | Race detail + map |
+| `src/app/events/[slug]/page.tsx` | Race detail + map + updates feed |
+| `src/app/feed/page.tsx` | Community feed (posts, recaps, updates) |
 | `src/app/submit/page.tsx` | Public submission form → `POST /api/submit` |
 | `src/app/admin/page.tsx` | Moderation dashboard (approve/reject) |
 | `src/app/admin/new/page.tsx` | Create + publish a race |
 | `src/app/api/submit/route.ts` | Inserts `status=pending, source=submission` |
 | `src/app/api/events/route.ts` | POST creates published; PATCH changes status |
-| `src/lib/events.ts` | **All data access lives here** |
-| `src/lib/types.ts` | `RaceEvent` and related types |
+| `src/app/api/posts/route.ts` | Community posts CRUD |
+| `src/lib/events.ts` | **All race data access lives here** |
+| `src/lib/posts.ts` | **All post/feed data access lives here** |
+| `src/lib/email.ts` | Resend email helpers (submission + approval) |
+| `src/lib/types.ts` | `RaceEvent`, `Post`, and related types |
 | `src/lib/format.ts` | Date / gun-start / distance formatting |
 | `src/lib/supabase/` | `client.ts` (browser/anon), `server.ts` (anon + service role) |
-| `supabase/` | SQL migration + seed |
+| `supabase/` | SQL migrations + seed |
 
 ## Conventions (follow these)
 
@@ -75,14 +79,32 @@ than reinventing them.
 
 ## State of the project
 
-**Done (Phase 1):** directory, date/distance filters, race detail + map, public
-submission → moderation queue, basic admin CRUD, Postgres schema with RLS,
-`/admin` protected with Supabase Auth, dynamic Open Graph race-card images.
+**Done:**
+- Race directory with date/distance filters
+- Race detail page with Leaflet map + CartoDB Voyager tiles
+- GPX route upload + click-to-trace map (submit + admin)
+- Public submission → moderation queue → admin approve/reject
+- Admin CRUD (create, approve, reject, delete)
+- Postgres schema with RLS, `/admin` protected with Supabase Auth
+- Dynamic Open Graph race-card images (edge runtime)
+- Email confirmations via Resend (submission + approval + rejection)
+- Organizer email field on submit form
 
-**Next, in order:**
-1. Email confirmations on submission + approval (Resend).
-2. Banner image uploads (Supabase Storage), organizer records.
-3. Phase 3: saved/"interested" races, race-day reminders, `.ics` export.
+**In progress — Community & Social layer:**
+1. Community feed (`/feed`) — posts, race recaps, runner updates (Threads-like)
+2. Race updates — organizers post updates attached to a specific race
+3. Reactions (likes/cheers) on posts
+4. Comments on posts
+
+**Up next after feed:**
+5. Banner image uploads (Supabase Storage)
+6. "I'm Joining" counter — one-click interest per race (no account needed)
+7. `.ics` calendar export — add race to Google/Apple Calendar
+8. Race results — post finish times after race day, runners search their name
+9. Facebook Event auto-import — paste URL, AI extracts race details into admin form
+10. Runner profiles + auth — personal race history, PRs, follow other runners
+11. PWA + race-day push notifications
+12. Admin: Facebook Event auto-import tool
 
 ## Guardrails
 

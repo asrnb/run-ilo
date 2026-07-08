@@ -1,6 +1,6 @@
 import { Suspense } from 'react'
 import Link from 'next/link'
-import { getPublishedEvents } from '@/lib/events'
+import { getPublishedEvents, getJoinCount } from '@/lib/events'
 import { formatDate, formatGunStart, formatDistance } from '@/lib/format'
 import EventFilters from '@/components/EventFilters'
 
@@ -30,6 +30,9 @@ export default async function HomePage({ searchParams }: HomePageProps) {
   const events = distFilter
     ? all.filter((e) => e.distances.includes(distFilter))
     : all
+  const joinCounts = Object.fromEntries(
+    await Promise.all(all.map(async (e) => [e.id, await getJoinCount(e.id).catch(() => 0)]))
+  )
 
   return (
     <main className="min-h-screen bg-white">
@@ -55,6 +58,8 @@ export default async function HomePage({ searchParams }: HomePageProps) {
           <p className="text-gray-500 text-base leading-relaxed max-w-xs">
             Your guide to fun runs and marathons in Iloilo City.{' '}
             <span className="text-gray-400">Lace up and run the City of Love.</span>
+            {' '}
+            <Link href="/feed" className="text-sunrise hover:underline">Community feed →</Link>
           </p>
           <div className="text-right shrink-0">
             <p className="font-mono text-5xl font-bold text-gray-900 leading-none">{all.length}</p>
@@ -101,6 +106,13 @@ export default async function HomePage({ searchParams }: HomePageProps) {
                       {event.name}
                     </h2>
                     <p className="text-gray-400 text-sm mb-4">{event.location}</p>
+                    <div className="flex flex-wrap items-center gap-1.5 mb-3">
+                      {joinCounts[event.id] > 0 && (
+                        <span className="data-label text-festival bg-festival/10 border border-festival/20 px-2 py-0.5 rounded-full">
+                          👟 {joinCounts[event.id]} joining
+                        </span>
+                      )}
+                    </div>
                     <div className="flex gap-1.5 flex-wrap">
                       {event.distances.map((d) => (
                         <span
@@ -137,6 +149,12 @@ export default async function HomePage({ searchParams }: HomePageProps) {
           </p>
         </div>
         <div className="flex items-center gap-4">
+          <Link
+            href="/feed"
+            className="text-sm text-gray-500 hover:text-gray-900 transition-colors"
+          >
+            Community
+          </Link>
           <Link
             href="/submit"
             className="text-sm text-gray-500 border border-gray-200 px-4 py-2 rounded-full hover:border-sunrise hover:text-sunrise transition-colors"

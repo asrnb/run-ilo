@@ -1,8 +1,11 @@
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
-import { getEventBySlug } from '@/lib/events'
+import { getEventBySlug, getJoinCount } from '@/lib/events'
+import { getPostsByRace } from '@/lib/posts'
 import { formatDate, formatGunStart, formatDistance } from '@/lib/format'
 import EventMapLoader from '@/components/event-map-loader'
+import RaceFeed from '@/components/RaceFeed'
+import JoinButton from '@/components/JoinButton'
 import type { Metadata } from 'next'
 
 interface EventPageProps {
@@ -31,6 +34,10 @@ export async function generateMetadata({ params }: EventPageProps): Promise<Meta
 export default async function EventPage({ params }: EventPageProps) {
   const event = await getEventBySlug(params.slug)
   if (!event) notFound()
+  const [racePosts, joinCount] = await Promise.all([
+    getPostsByRace(event.id).catch(() => []),
+    getJoinCount(event.id).catch(() => 0),
+  ])
 
   return (
     <main className="min-h-screen bg-white px-6 py-12 max-w-2xl mx-auto">
@@ -77,19 +84,26 @@ export default async function EventPage({ params }: EventPageProps) {
         )}
       </div>
 
-      {event.registrationUrl && (
-        <a
-          href={event.registrationUrl}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="inline-block bg-sunrise text-white font-display font-semibold px-6 py-3 rounded-xl hover:bg-sunrise/90 transition-colors mb-10"
-        >
-          Register Now →
-        </a>
-      )}
+      <div className="flex flex-wrap items-center gap-3 mb-10">
+        <JoinButton raceId={event.id} initialCount={joinCount} />
+        {event.registrationUrl && (
+          <a
+            href={event.registrationUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-block bg-sunrise text-white font-display font-semibold px-6 py-3 rounded-xl hover:bg-sunrise/90 transition-colors"
+          >
+            Register Now →
+          </a>
+        )}
+      </div>
 
       <div className="rounded-xl overflow-hidden border border-gray-100">
         <EventMapLoader lat={event.lat} lng={event.lng} name={event.name} route={event.route} />
+      </div>
+
+      <div className="mt-10">
+        <RaceFeed raceEventId={event.id} initialPosts={racePosts} />
       </div>
 
       <footer className="mt-12 pt-6 border-t border-gray-100 flex justify-between items-center">
