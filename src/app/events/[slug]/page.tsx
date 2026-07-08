@@ -8,6 +8,24 @@ import RaceFeed from '@/components/RaceFeed'
 import JoinButton from '@/components/JoinButton'
 import type { Metadata } from 'next'
 
+function googleCalendarUrl(event: { name: string; date: string; gunStart: string; location: string; description?: string }) {
+  const [y, m, d] = event.date.split('-').map(Number)
+  const [h, min] = event.gunStart.split(':').map(Number)
+  // convert Philippine time (UTC+8) to UTC
+  const start = new Date(Date.UTC(y, m - 1, d, h - 8, min))
+  const end = new Date(start.getTime() + 4 * 60 * 60 * 1000) // +4 hours
+  const fmt = (dt: Date) =>
+    dt.toISOString().replace(/[-:]/g, '').replace('.000', '')
+  const params = new URLSearchParams({
+    action: 'TEMPLATE',
+    text: event.name,
+    dates: `${fmt(start)}/${fmt(end)}`,
+    location: `${event.location}, Iloilo City`,
+    details: event.description ?? '',
+  })
+  return `https://calendar.google.com/calendar/render?${params}`
+}
+
 interface EventPageProps {
   params: { slug: string }
 }
@@ -87,7 +105,9 @@ export default async function EventPage({ params }: EventPageProps) {
       <div className="flex flex-wrap items-center gap-3 mb-10">
         <JoinButton raceId={event.id} initialCount={joinCount} />
         <a
-          href={`/api/events/${event.id}/ics`}
+          href={googleCalendarUrl(event)}
+          target="_blank"
+          rel="noopener noreferrer"
           className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold border border-gray-200 text-gray-700 hover:border-royal hover:text-royal transition-colors bg-white"
         >
           <span>📅</span>
