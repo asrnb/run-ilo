@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { createEvent, updateEventStatus, deleteEvent, isSupabaseConfigured } from '@/lib/events'
+import { createEvent, updateEventStatus, deleteEvent, getEventById, isSupabaseConfigured } from '@/lib/events'
 import { getSessionUser, checkIsAdmin } from '@/lib/auth'
+import { sendApprovalEmail } from '@/lib/email'
 import { RaceRoute, RaceStatus } from '@/lib/types'
 
 async function requireAdmin(): Promise<boolean> {
@@ -55,7 +56,11 @@ export async function PATCH(req: NextRequest) {
   }
   try {
     const { id, status, route } = await req.json()
+    const event = await getEventById(id)
     await updateEventStatus(id, status as RaceStatus, route as RaceRoute | undefined)
+    if (event?.organizerEmail && (status === 'published' || status === 'rejected')) {
+      await sendApprovalEmail(event.organizerEmail, event.name, status as 'published' | 'rejected')
+    }
     return NextResponse.json({ ok: true })
   } catch (err) {
     return NextResponse.json({ ok: false, error: String(err) }, { status: 500 })

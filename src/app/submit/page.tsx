@@ -30,7 +30,7 @@ type State = 'idle' | 'loading' | 'success' | 'error'
 export default function SubmitPage() {
   const [form, setForm] = useState({
     name: '', date: '', gunStart: '', distances: [] as number[],
-    location: '', registrationUrl: '', description: '',
+    location: '', organizerEmail: '', registrationUrl: '', description: '',
   })
   const [route, setRoute] = useState<[number, number][]>([])
   const [routeMode, setRouteMode] = useState<'none' | 'gpx' | 'trace'>('none')
@@ -116,6 +116,12 @@ export default function SubmitPage() {
               </button>
             ))}
           </div>
+        </div>
+        <div>
+          <label className="data-label block mb-1.5">Your Email *</label>
+          <input required type="email" value={form.organizerEmail} onChange={(e) => setForm((f) => ({ ...f, organizerEmail: e.target.value }))}
+            placeholder="organizer@email.com" className={INPUT} />
+          <p className="text-xs text-gray-400 mt-1">We'll notify you when your race is approved.</p>
         </div>
         <div>
           <label className="data-label block mb-1.5">Location (Starting Point) *</label>

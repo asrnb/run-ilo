@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createEvent } from '@/lib/events'
+import { sendSubmissionConfirmation, sendAdminNotification } from '@/lib/email'
 
 export async function POST(req: NextRequest) {
   try {
@@ -16,9 +17,18 @@ export async function POST(req: NextRequest) {
       registrationUrl: body.registrationUrl || undefined,
       description: body.description || undefined,
       route: body.route || undefined,
+      organizerEmail: body.organizerEmail || undefined,
       status: 'pending',
       source: 'submission',
     })
+
+    if (body.organizerEmail) {
+      await Promise.all([
+        sendSubmissionConfirmation(body.organizerEmail, body.name),
+        sendAdminNotification(body.name, body.organizerEmail),
+      ])
+    }
+
     return NextResponse.json({ ok: true, event })
   } catch (err: unknown) {
     const message = err instanceof Error

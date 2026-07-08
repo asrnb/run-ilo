@@ -21,6 +21,7 @@ function fromRow(row: RaceEventRow): RaceEvent {
     lat: row.lat,
     lng: row.lng,
     route: row.route ?? undefined,
+    organizerEmail: row.organizer_email ?? undefined,
     registrationUrl: row.registration_url ?? undefined,
     description: row.description ?? undefined,
     status: row.status,
@@ -54,6 +55,17 @@ export async function getEventBySlug(slug: string): Promise<RaceEvent | null> {
     .select('*')
     .eq('slug', slug)
     .eq('status', 'published')
+    .single()
+  if (error) return null
+  return fromRow(data as RaceEventRow)
+}
+
+export async function getEventById(id: string): Promise<RaceEvent | null> {
+  if (!isSupabaseConfigured()) return null
+  const { data, error } = await createServiceClient()
+    .from('race_events')
+    .select('*')
+    .eq('id', id)
     .single()
   if (error) return null
   return fromRow(data as RaceEventRow)
@@ -93,6 +105,7 @@ export async function createEvent(
       registration_url: payload.registrationUrl ?? null,
       description: payload.description ?? null,
       route: payload.route ?? null,
+      organizer_email: payload.organizerEmail ?? null,
       status: payload.status,
       source: payload.source,
     })

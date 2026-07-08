@@ -14,6 +14,7 @@ export interface RaceEvent {
   lat: number
   lng: number
   route?: RaceRoute
+  organizerEmail?: string
   registrationUrl?: string
   description?: string
   status: RaceStatus
@@ -33,6 +34,7 @@ export interface RaceEventRow {
   lat: number
   lng: number
   route: [number, number][] | null
+  organizer_email: string | null
   registration_url: string | null
   description: string | null
   status: RaceStatus
