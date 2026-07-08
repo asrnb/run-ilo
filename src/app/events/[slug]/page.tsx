@@ -86,6 +86,13 @@ export default async function EventPage({ params }: EventPageProps) {
 
       <div className="flex flex-wrap items-center gap-3 mb-10">
         <JoinButton raceId={event.id} initialCount={joinCount} />
+        <a
+          href={`/api/events/${event.id}/ics`}
+          className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold border border-gray-200 text-gray-700 hover:border-royal hover:text-royal transition-colors bg-white"
+        >
+          <span>📅</span>
+          <span>Add to Calendar</span>
+        </a>
         {event.registrationUrl && (
           <a
             href={event.registrationUrl}
