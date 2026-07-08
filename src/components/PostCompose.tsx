@@ -10,6 +10,8 @@ interface Props {
   onPost?: (post: Post) => void
 }
 
+const INPUT = 'bg-predawn-800 border border-predawn-700 rounded-lg px-3 py-2 text-sm text-white placeholder:text-predawn-600 focus:outline-none focus:ring-2 focus:ring-sunrise/30 focus:border-sunrise/50 transition-colors'
+
 export default function PostCompose({ raceEventId, showKind = false, placeholder, onPost }: Props) {
   const [name, setName] = useState('')
   const [content, setContent] = useState('')
@@ -40,7 +42,7 @@ export default function PostCompose({ raceEventId, showKind = false, placeholder
   }
 
   return (
-    <form onSubmit={submit} className="bg-white border border-gray-100 rounded-xl p-4 space-y-3">
+    <form onSubmit={submit} className="bg-predawn-800 border border-predawn-700 rounded-xl p-4 space-y-3">
       <div className="flex gap-2">
         <input
           value={name}
@@ -48,13 +50,13 @@ export default function PostCompose({ raceEventId, showKind = false, placeholder
           placeholder="Your name"
           maxLength={60}
           required
-          className="flex-1 min-w-0 px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-sunrise/30 bg-white text-gray-900 placeholder:text-gray-400"
+          className={`flex-1 min-w-0 ${INPUT}`}
         />
         {showKind && (
           <select
             value={kind}
             onChange={e => setKind(e.target.value as PostKind)}
-            className="px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-sunrise/30 bg-white text-gray-700"
+            className={INPUT}
           >
             <option value="general">Post</option>
             <option value="update">Race Update</option>
@@ -70,7 +72,7 @@ export default function PostCompose({ raceEventId, showKind = false, placeholder
         rows={3}
         maxLength={1000}
         required
-        className="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-sunrise/30 bg-white text-gray-900 placeholder:text-gray-400 resize-none"
+        className={`w-full ${INPUT} resize-none`}
       />
       {error && <p className="text-xs text-love">{error}</p>}
       <div className="flex justify-end">

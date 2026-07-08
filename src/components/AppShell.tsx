@@ -43,7 +43,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
     href === '/' ? pathname === '/' : pathname.startsWith(href)
 
   return (
-    <div className="min-h-screen flex flex-col bg-white">
+    <div className="min-h-screen flex flex-col bg-predawn-900">
       {/* ── Top header ── */}
       <header className="sticky top-0 z-30 bg-predawn-900 border-b border-predawn-800">
         <div className="max-w-2xl mx-auto px-4 h-14 flex items-center justify-between">

@@ -21,7 +21,6 @@ export default function JoinButton({ raceId, initialCount }: Props) {
   async function handleJoin() {
     if (joined || loading) return
     setLoading(true)
-    // optimistic
     setCount(c => c + 1)
     setJoined(true)
     localStorage.setItem(STORAGE_KEY(raceId), '1')
@@ -43,14 +42,14 @@ export default function JoinButton({ raceId, initialCount }: Props) {
       className={[
         'flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold transition-all',
         joined
-          ? 'bg-festival/10 text-festival border border-festival/30 cursor-default'
-          : 'bg-white border border-gray-200 text-gray-700 hover:border-festival hover:text-festival',
+          ? 'bg-festival/15 text-festival border border-festival/30 cursor-default'
+          : 'border border-predawn-700 text-predawn-300 hover:border-festival hover:text-festival',
       ].join(' ')}
     >
       <span>{joined ? '✓' : '👟'}</span>
       <span>{joined ? "You're in!" : "I'm Joining"}</span>
       {count > 0 && (
-        <span className={`font-mono text-xs ${joined ? 'text-festival' : 'text-gray-400'}`}>
+        <span className={`font-mono text-xs ${joined ? 'text-festival' : 'text-predawn-500'}`}>
           {count}
         </span>
       )}

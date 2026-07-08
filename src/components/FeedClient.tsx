@@ -16,7 +16,7 @@ export default function FeedClient({ initialPosts }: { initialPosts: Post[] }) {
     <div className="space-y-4">
       <PostCompose onPost={handleNewPost} placeholder="Share a run, tip, or race update…" />
       {posts.length === 0 ? (
-        <p className="text-center text-gray-400 text-sm py-12">
+        <p className="text-center text-predawn-500 text-sm py-12">
           No posts yet. Be the first to share something!
         </p>
       ) : (

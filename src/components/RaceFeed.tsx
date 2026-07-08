@@ -20,7 +20,7 @@ export default function RaceFeed({
 
   return (
     <div className="space-y-4">
-      <h2 className="data-label text-gray-500">Race Updates</h2>
+      <h2 className="data-label text-predawn-500">Race Updates</h2>
       <PostCompose
         raceEventId={raceEventId}
         showKind
@@ -28,7 +28,7 @@ export default function RaceFeed({
         onPost={handleNewPost}
       />
       {posts.length === 0 ? (
-        <p className="text-sm text-gray-400 text-center py-8">
+        <p className="text-sm text-predawn-500 text-center py-8">
           No updates yet. Share something!
         </p>
       ) : (

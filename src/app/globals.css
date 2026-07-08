@@ -4,7 +4,7 @@
 
 @layer components {
   .data-label {
-    @apply font-mono text-xs tracking-[0.15em] uppercase text-gray-400;
+    @apply font-mono text-xs tracking-[0.15em] uppercase text-predawn-400;
   }
 
   .startline {

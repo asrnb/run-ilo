@@ -12,7 +12,7 @@ const KIND_LABEL: Record<string, string> = {
 }
 
 const KIND_COLOR: Record<string, string> = {
-  general: 'text-gray-400',
+  general: 'text-predawn-500',
   update: 'text-royal',
   result: 'text-festival',
   recap: 'text-sunrise',
@@ -57,12 +57,12 @@ export default function PostCard({ post }: { post: Post }) {
   }
 
   return (
-    <div className="bg-white border border-gray-100 rounded-xl p-4 space-y-3">
+    <div className="bg-predawn-800 border border-predawn-700 rounded-xl p-4 space-y-3">
       <div className="flex items-start justify-between gap-2">
         <div>
-          <span className="font-semibold text-gray-900 text-sm">{post.authorName}</span>
+          <span className="font-semibold text-white text-sm">{post.authorName}</span>
           {post.raceSlug && post.raceName && (
-            <span className="text-gray-400 text-sm">
+            <span className="text-predawn-500 text-sm">
               {' · '}
               <Link href={`/events/${post.raceSlug}`} className="hover:text-sunrise transition-colors">
                 {post.raceName}
@@ -74,11 +74,11 @@ export default function PostCard({ post }: { post: Post }) {
           <span className={`text-xs font-mono uppercase tracking-wider ${KIND_COLOR[post.kind]}`}>
             {KIND_LABEL[post.kind]}
           </span>
-          <span className="text-xs text-gray-300 font-mono">{formatRelative(post.createdAt)}</span>
+          <span className="text-xs text-predawn-600 font-mono">{formatRelative(post.createdAt)}</span>
         </div>
       </div>
 
-      <p className="text-gray-700 text-sm leading-relaxed whitespace-pre-wrap">{post.content}</p>
+      <p className="text-predawn-200 text-sm leading-relaxed whitespace-pre-wrap">{post.content}</p>
 
       <div className="flex items-center gap-2 pt-1">
         {EMOJIS.map(emoji => {
@@ -87,10 +87,10 @@ export default function PostCard({ post }: { post: Post }) {
             <button
               key={emoji}
               onClick={() => react(emoji)}
-              className="flex items-center gap-1 px-2 py-1 rounded-full text-sm bg-gray-50 hover:bg-gray-100 transition-colors"
+              className="flex items-center gap-1 px-2 py-1 rounded-full text-sm bg-predawn-700 hover:bg-predawn-600 transition-colors"
             >
               <span>{emoji}</span>
-              {r && <span className="text-xs text-gray-500 font-mono">{r.count}</span>}
+              {r && <span className="text-xs text-predawn-300 font-mono">{r.count}</span>}
             </button>
           )
         })}

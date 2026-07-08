@@ -39,7 +39,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${archivo.variable} ${jakarta.variable} ${jetbrains.variable} bg-white text-gray-900 font-body min-h-screen antialiased`}
+        className={`${archivo.variable} ${jakarta.variable} ${jetbrains.variable} bg-predawn-900 text-predawn-50 font-body min-h-screen antialiased`}
       >
         <AppShell>{children}</AppShell>
       </body>

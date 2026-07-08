@@ -22,7 +22,7 @@ const PILL_INACTIVE: Record<number, string> = {
   42: 'border-mango/40 text-mango/70 hover:border-mango',
 }
 
-const INPUT = 'w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-gray-900 placeholder:text-gray-400 focus:border-gray-400 focus:outline-none transition-colors'
+const INPUT = 'w-full bg-predawn-800 border border-predawn-700 rounded-xl px-4 py-2.5 text-white placeholder:text-predawn-600 focus:border-sunrise/50 focus:outline-none focus:ring-2 focus:ring-sunrise/20 transition-colors'
 const ILOILO: [number, number] = [10.6966, 122.5695]
 
 type State = 'idle' | 'loading' | 'success' | 'error'
@@ -72,23 +72,23 @@ export default function SubmitPage() {
 
   if (state === 'success') {
     return (
-      <main className="min-h-screen bg-white px-6 py-12 max-w-xl mx-auto flex flex-col items-center justify-center text-center">
+      <div className="px-6 py-12 max-w-xl mx-auto flex flex-col items-center justify-center text-center min-h-[60vh]">
         <p className="text-5xl mb-6">🏃</p>
-        <h1 className="font-display text-2xl font-bold text-gray-900 mb-3">Race submitted!</h1>
-        <p className="text-gray-500 mb-8">Your race is pending review. We'll publish it once approved.</p>
+        <h1 className="font-display text-2xl font-bold text-white mb-3">Race submitted!</h1>
+        <p className="text-predawn-400 mb-8">Your race is pending review. We'll publish it once approved.</p>
         <Link href="/" className="text-sunrise hover:underline">Back to races →</Link>
-      </main>
+      </div>
     )
   }
 
   return (
-    <main className="min-h-screen bg-white px-6 py-12 max-w-xl mx-auto">
-      <Link href="/" className="data-label text-gray-400 hover:text-gray-900 mb-10 inline-block transition-colors">
+    <div className="px-4 py-8 max-w-xl mx-auto">
+      <Link href="/" className="data-label text-predawn-500 hover:text-predawn-200 mb-10 inline-block transition-colors">
         ← All races
       </Link>
 
-      <h1 className="font-display text-3xl font-bold text-gray-900 mb-2">Submit a Race</h1>
-      <p className="text-gray-500 mb-8">Submissions are reviewed before publishing.</p>
+      <h1 className="font-display text-3xl font-bold text-white mb-2">Submit a Race</h1>
+      <p className="text-predawn-400 mb-8">Submissions are reviewed before publishing.</p>
 
       <form onSubmit={handleSubmit} className="space-y-5">
         <div>
@@ -121,7 +121,7 @@ export default function SubmitPage() {
           <label className="data-label block mb-1.5">Your Email *</label>
           <input required type="email" value={form.organizerEmail} onChange={(e) => setForm((f) => ({ ...f, organizerEmail: e.target.value }))}
             placeholder="organizer@email.com" className={INPUT} />
-          <p className="text-xs text-gray-400 mt-1">We'll notify you when your race is approved.</p>
+          <p className="text-xs text-predawn-600 mt-1">We'll notify you when your race is approved.</p>
         </div>
         <div>
           <label className="data-label block mb-1.5">Location (Starting Point) *</label>
@@ -132,21 +132,21 @@ export default function SubmitPage() {
         {/* Route */}
         <div>
           <label className="data-label block mb-2">Race Route (optional)</label>
-          <p className="text-xs text-gray-400 mb-3">Have a route? Attach it so runners can preview it on the map.</p>
+          <p className="text-xs text-predawn-600 mb-3">Have a route? Attach it so runners can preview it on the map.</p>
           <div className="flex gap-2 mb-3 flex-wrap">
             <button type="button" onClick={() => setRouteMode(routeMode === 'gpx' ? 'none' : 'gpx')}
               className={['data-label px-3 py-1.5 rounded-full border transition-all',
-                routeMode === 'gpx' ? 'bg-royal border-royal text-white' : 'border-gray-200 text-gray-500 hover:border-gray-400'].join(' ')}>
+                routeMode === 'gpx' ? 'bg-royal border-royal text-white' : 'border-predawn-700 text-predawn-400 hover:border-predawn-500'].join(' ')}>
               Upload GPX
             </button>
             <button type="button" onClick={() => setRouteMode(routeMode === 'trace' ? 'none' : 'trace')}
               className={['data-label px-3 py-1.5 rounded-full border transition-all',
-                routeMode === 'trace' ? 'bg-royal border-royal text-white' : 'border-gray-200 text-gray-500 hover:border-gray-400'].join(' ')}>
+                routeMode === 'trace' ? 'bg-royal border-royal text-white' : 'border-predawn-700 text-predawn-400 hover:border-predawn-500'].join(' ')}>
               Trace on Map
             </button>
             {route.length > 0 && (
               <button type="button" onClick={() => setRoute([])}
-                className="data-label px-3 py-1.5 rounded-full border border-gray-200 text-gray-400 hover:border-red-300 hover:text-red-400 transition-all">
+                className="data-label px-3 py-1.5 rounded-full border border-predawn-700 text-predawn-500 hover:border-love hover:text-love transition-all">
                 Clear Route
               </button>
             )}
@@ -155,10 +155,10 @@ export default function SubmitPage() {
           {routeMode === 'gpx' && (
             <div>
               <input type="file" accept=".gpx" onChange={handleGPX}
-                className="block w-full text-sm text-gray-500 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border file:border-gray-200 file:text-xs file:text-gray-500 file:bg-white hover:file:border-gray-400 transition-colors" />
+                className="block w-full text-sm text-predawn-400 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border file:border-predawn-700 file:text-xs file:text-predawn-400 file:bg-predawn-800 hover:file:border-predawn-500 transition-colors" />
               {route.length > 0
                 ? <p className="data-label text-festival mt-1.5">✓ {route.length} route points loaded</p>
-                : <p className="text-xs text-gray-400 mt-1">Export from Strava or Garmin as a .gpx file</p>
+                : <p className="text-xs text-predawn-600 mt-1">Export from Strava or Garmin as a .gpx file</p>
               }
             </div>
           )}
@@ -178,12 +178,12 @@ export default function SubmitPage() {
           <textarea rows={3} value={form.description} onChange={(e) => setForm((f) => ({ ...f, description: e.target.value }))}
             placeholder="A short description of the race..." className={`${INPUT} resize-none`} />
         </div>
-        {state === 'error' && <p className="text-red-500 text-sm">Something went wrong. Please try again.</p>}
+        {state === 'error' && <p className="text-love text-sm">Something went wrong. Please try again.</p>}
         <button type="submit" disabled={state === 'loading' || form.distances.length === 0}
           className="w-full bg-sunrise text-white font-display font-semibold py-3 rounded-xl hover:bg-sunrise/90 disabled:opacity-50 transition-colors">
           {state === 'loading' ? 'Submitting…' : 'Submit Race'}
         </button>
       </form>
-    </main>
+    </div>
   )
 }

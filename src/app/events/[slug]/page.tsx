@@ -58,22 +58,22 @@ export default async function EventPage({ params }: EventPageProps) {
   ])
 
   return (
-    <div className="bg-white px-4 py-8 max-w-2xl mx-auto">
-      <Link href="/" className="data-label text-gray-400 hover:text-gray-700 mb-8 inline-block transition-colors">
+    <div className="px-4 py-8 max-w-2xl mx-auto">
+      <Link href="/" className="data-label text-predawn-500 hover:text-predawn-200 mb-8 inline-block transition-colors">
         ← All races
       </Link>
 
       <div className="border-l-4 border-sunrise pl-4 mb-8">
         <p className="data-label text-sunrise mb-2">{formatDate(event.date)}</p>
-        <h1 className="font-display text-3xl font-bold text-gray-900 leading-tight">
+        <h1 className="font-display text-3xl font-bold text-white leading-tight">
           {event.name}
         </h1>
       </div>
 
-      <div className="space-y-6 mb-10 divide-y divide-gray-100">
+      <div className="space-y-6 mb-10 divide-y divide-predawn-800">
         <div>
           <p className="data-label mb-1.5">Location</p>
-          <p className="text-gray-900">{event.location}</p>
+          <p className="text-predawn-100">{event.location}</p>
         </div>
 
         <div className="pt-6">
@@ -87,7 +87,7 @@ export default async function EventPage({ params }: EventPageProps) {
           <p className="data-label mb-2">Distances</p>
           <div className="flex gap-2 flex-wrap">
             {event.distances.map((d) => (
-              <span key={d} className={`data-label px-3 py-1 rounded-lg border ${DISTANCE_COLORS[d] ?? 'border-gray-200 text-gray-600'}`}>
+              <span key={d} className={`data-label px-3 py-1 rounded-lg border ${DISTANCE_COLORS[d] ?? 'border-predawn-700 text-predawn-400'}`}>
                 {formatDistance(d)}
               </span>
             ))}
@@ -97,7 +97,7 @@ export default async function EventPage({ params }: EventPageProps) {
         {event.description && (
           <div className="pt-6">
             <p className="data-label mb-1.5">About</p>
-            <p className="text-gray-600 leading-relaxed">{event.description}</p>
+            <p className="text-predawn-300 leading-relaxed">{event.description}</p>
           </div>
         )}
       </div>
@@ -108,7 +108,7 @@ export default async function EventPage({ params }: EventPageProps) {
           href={googleCalendarUrl(event)}
           target="_blank"
           rel="noopener noreferrer"
-          className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold border border-gray-200 text-gray-700 hover:border-royal hover:text-royal transition-colors bg-white"
+          className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold border border-predawn-700 text-predawn-300 hover:border-royal hover:text-royal transition-colors"
         >
           <span>📅</span>
           <span>Add to Calendar</span>
@@ -118,14 +118,14 @@ export default async function EventPage({ params }: EventPageProps) {
             href={event.registrationUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-block bg-sunrise text-white font-display font-semibold px-6 py-3 rounded-xl hover:bg-sunrise/90 transition-colors"
+            className="inline-block bg-sunrise text-white font-display font-semibold px-6 py-3 rounded-xl hover:bg-orange-500 transition-colors"
           >
             Register Now →
           </a>
         )}
       </div>
 
-      <div className="rounded-xl overflow-hidden border border-gray-100">
+      <div className="rounded-xl overflow-hidden border border-predawn-800">
         <EventMapLoader lat={event.lat} lng={event.lng} name={event.name} route={event.route} />
       </div>
 
