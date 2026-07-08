@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import { Archivo, Plus_Jakarta_Sans, JetBrains_Mono } from 'next/font/google'
+import AppShell from '@/components/AppShell'
 import './globals.css'
 
 const archivo = Archivo({
@@ -40,7 +41,7 @@ export default function RootLayout({
       <body
         className={`${archivo.variable} ${jakarta.variable} ${jetbrains.variable} bg-white text-gray-900 font-body min-h-screen antialiased`}
       >
-        {children}
+        <AppShell>{children}</AppShell>
       </body>
     </html>
   )

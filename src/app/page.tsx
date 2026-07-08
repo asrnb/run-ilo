@@ -35,41 +35,35 @@ export default async function HomePage({ searchParams }: HomePageProps) {
   )
 
   return (
-    <main className="min-h-screen bg-white">
+    <div className="bg-white">
 
       {/* ── Hero ── */}
-      <section className="px-6 pt-14 pb-10 max-w-4xl mx-auto">
-        <div className="inline-flex items-center gap-1.5 bg-love/10 border border-love/25 rounded-full px-3 py-1 mb-6">
+      <section className="px-4 pt-8 pb-6 max-w-2xl mx-auto">
+        <div className="inline-flex items-center gap-1.5 bg-love/10 border border-love/25 rounded-full px-3 py-1 mb-5">
           <span className="text-love text-sm leading-none">♥</span>
           <span className="data-label text-love">The City of Love, Iloilo</span>
         </div>
 
-        <h1 className="font-display font-bold tracking-tight leading-none mb-4">
-          <span className="text-[clamp(4rem,12vw,7rem)] block">
+        <div className="flex items-end justify-between gap-4 mb-2">
+          <h1 className="font-display font-bold tracking-tight leading-none text-[clamp(3rem,10vw,5rem)]">
             <span className="text-gray-900">run</span>
             <span className="text-sunrise">.</span>
             <span className="bg-gradient-to-r from-festival via-royal to-mango bg-clip-text text-transparent">ilo</span>
-          </span>
-        </h1>
-
-        <div className="h-px w-40 bg-gradient-to-r from-festival via-sunrise to-mango mb-6" />
-
-        <div className="flex items-start justify-between gap-6">
-          <p className="text-gray-500 text-base leading-relaxed max-w-xs">
-            Your guide to fun runs and marathons in Iloilo City.{' '}
-            <span className="text-gray-400">Lace up and run the City of Love.</span>
-            {' '}
-            <Link href="/feed" className="text-sunrise hover:underline">Community feed →</Link>
-          </p>
-          <div className="text-right shrink-0">
-            <p className="font-mono text-5xl font-bold text-gray-900 leading-none">{all.length}</p>
-            <p className="data-label mt-1.5 leading-tight">upcoming<br />races</p>
+          </h1>
+          <div className="text-right shrink-0 pb-1">
+            <p className="font-mono text-4xl font-bold text-gray-900 leading-none">{all.length}</p>
+            <p className="data-label mt-1 leading-tight">upcoming<br />races</p>
           </div>
         </div>
+
+        <div className="h-px w-32 bg-gradient-to-r from-festival via-sunrise to-mango mb-4" />
+        <p className="text-gray-400 text-sm leading-relaxed">
+          Fun runs and marathons in Iloilo City. Lace up and run the City of Love.
+        </p>
       </section>
 
       {/* ── Filters ── */}
-      <section className="px-6 pb-6 max-w-4xl mx-auto">
+      <section className="px-4 pb-4 max-w-2xl mx-auto">
         <p className="data-label mb-3">Filter by distance</p>
         <Suspense fallback={null}>
           <EventFilters />
@@ -77,8 +71,8 @@ export default async function HomePage({ searchParams }: HomePageProps) {
       </section>
 
       {/* ── Race list ── */}
-      <section className="px-6 pb-20 max-w-4xl mx-auto">
-        <div className="flex items-center justify-between mb-5 pb-3 border-b border-gray-100">
+      <section className="px-4 pb-6 max-w-2xl mx-auto">
+        <div className="flex items-center justify-between mb-4 pb-3 border-b border-gray-100">
           <h2 className="data-label text-gray-400">
             {distFilter ? `${formatDistance(distFilter)} Races` : 'All Races'}
           </h2>
@@ -94,26 +88,24 @@ export default async function HomePage({ searchParams }: HomePageProps) {
                 <Link
                   href={`/events/${event.slug}`}
                   className={[
-                    'group flex items-start gap-6 rounded-2xl px-6 py-6',
+                    'group flex items-start gap-4 rounded-2xl px-4 py-5',
                     'bg-gray-50 border border-gray-100 border-l-4',
                     cardBorderClass(event.distances),
-                    'hover:bg-gray-100 hover:border-gray-200 transition-all',
+                    'hover:bg-gray-100 transition-all',
                   ].join(' ')}
                 >
                   <div className="flex-1 min-w-0">
-                    <p className="data-label mb-2">{formatDate(event.date)}</p>
-                    <h2 className="font-display text-xl font-bold text-gray-900 mb-1.5 group-hover:text-sunrise transition-colors leading-snug">
+                    <p className="data-label mb-1.5">{formatDate(event.date)}</p>
+                    <h2 className="font-display text-lg font-bold text-gray-900 mb-1 group-hover:text-sunrise transition-colors leading-snug">
                       {event.name}
                     </h2>
-                    <p className="text-gray-400 text-sm mb-4">{event.location}</p>
-                    <div className="flex flex-wrap items-center gap-1.5 mb-3">
+                    <p className="text-gray-400 text-sm mb-3">{event.location}</p>
+                    <div className="flex flex-wrap items-center gap-1.5">
                       {joinCounts[event.id] > 0 && (
                         <span className="data-label text-festival bg-festival/10 border border-festival/20 px-2 py-0.5 rounded-full">
                           👟 {joinCounts[event.id]} joining
                         </span>
                       )}
-                    </div>
-                    <div className="flex gap-1.5 flex-wrap">
                       {event.distances.map((d) => (
                         <span
                           key={d}
@@ -125,8 +117,8 @@ export default async function HomePage({ searchParams }: HomePageProps) {
                     </div>
                   </div>
 
-                  <div className="text-right shrink-0 pt-7">
-                    <p className="font-mono text-2xl font-bold text-sunrise leading-none">
+                  <div className="text-right shrink-0 pt-6">
+                    <p className="font-mono text-xl font-bold text-sunrise leading-none">
                       {formatGunStart(event.gunStart)}
                     </p>
                     <p className="data-label text-gray-300 mt-1">gun start</p>
@@ -139,33 +131,14 @@ export default async function HomePage({ searchParams }: HomePageProps) {
       </section>
 
       {/* ── Footer ── */}
-      <footer className="px-6 py-10 border-t border-gray-100 max-w-4xl mx-auto flex justify-between items-center">
-        <div>
-          <span className="font-display font-bold text-gray-900 text-sm">
-            run<span className="text-sunrise">.</span>ilo
-          </span>
-          <p className="text-xs text-gray-300 mt-0.5">
-            Made with <span className="text-love">♥</span> in Iloilo City
-          </p>
-        </div>
-        <div className="flex items-center gap-4">
-          <Link
-            href="/feed"
-            className="text-sm text-gray-500 hover:text-gray-900 transition-colors"
-          >
-            Community
-          </Link>
-          <Link
-            href="/submit"
-            className="text-sm text-gray-500 border border-gray-200 px-4 py-2 rounded-full hover:border-sunrise hover:text-sunrise transition-colors"
-          >
-            Submit a race →
-          </Link>
-          <Link href="/admin" className="text-xs text-gray-300 hover:text-gray-500 transition-colors">
-            Admin
-          </Link>
-        </div>
+      <footer className="px-4 py-6 border-t border-gray-100 max-w-2xl mx-auto flex justify-between items-center">
+        <p className="text-xs text-gray-300">
+          Made with <span className="text-love">♥</span> in Iloilo City
+        </p>
+        <Link href="/admin" className="text-xs text-gray-300 hover:text-gray-500 transition-colors">
+          Admin
+        </Link>
       </footer>
-    </main>
+    </div>
   )
 }

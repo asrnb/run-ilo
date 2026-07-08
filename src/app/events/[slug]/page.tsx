@@ -58,8 +58,8 @@ export default async function EventPage({ params }: EventPageProps) {
   ])
 
   return (
-    <main className="min-h-screen bg-white px-6 py-12 max-w-2xl mx-auto">
-      <Link href="/" className="data-label text-gray-400 hover:text-gray-900 mb-10 inline-block transition-colors">
+    <div className="bg-white px-4 py-8 max-w-2xl mx-auto">
+      <Link href="/" className="data-label text-gray-400 hover:text-gray-700 mb-8 inline-block transition-colors">
         ← All races
       </Link>
 
@@ -132,11 +132,6 @@ export default async function EventPage({ params }: EventPageProps) {
       <div className="mt-10">
         <RaceFeed raceEventId={event.id} initialPosts={racePosts} />
       </div>
-
-      <footer className="mt-12 pt-6 border-t border-gray-100 flex justify-between items-center">
-        <Link href="/" className="data-label text-gray-400 hover:text-gray-900 transition-colors">← run.ilo</Link>
-        <span className="text-xs text-gray-300">Made with <span className="text-love">♥</span> in Iloilo City</span>
-      </footer>
-    </main>
+    </div>
   )
 }
