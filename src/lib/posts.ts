@@ -114,3 +114,42 @@ export async function addReaction(postId: string, emoji: string): Promise<void> 
     .insert({ post_id: postId, emoji })
   if (error) throw error
 }
+
+export interface Comment {
+  id: string
+  postId: string
+  authorName: string
+  content: string
+  createdAt: string
+}
+
+export async function getComments(postId: string): Promise<Comment[]> {
+  if (!isSupabaseConfigured()) return []
+  const { data, error } = await createAnonClient()
+    .from('post_comments')
+    .select('id, post_id, author_name, content, created_at')
+    .eq('post_id', postId)
+    .order('created_at', { ascending: true })
+  if (error) return []
+  return (data as { id: string; post_id: string; author_name: string; content: string; created_at: string }[]).map(r => ({
+    id: r.id,
+    postId: r.post_id,
+    authorName: r.author_name,
+    content: r.content,
+    createdAt: r.created_at,
+  }))
+}
+
+export async function addComment(postId: string, authorName: string, content: string): Promise<Comment> {
+  if (!isSupabaseConfigured()) {
+    return { id: crypto.randomUUID(), postId, authorName, content, createdAt: new Date().toISOString() }
+  }
+  const { data, error } = await createServiceClient()
+    .from('post_comments')
+    .insert({ post_id: postId, author_name: authorName, content })
+    .select()
+    .single()
+  if (error) throw error
+  const r = data as { id: string; post_id: string; author_name: string; content: string; created_at: string }
+  return { id: r.id, postId: r.post_id, authorName: r.author_name, content: r.content, createdAt: r.created_at }
+}

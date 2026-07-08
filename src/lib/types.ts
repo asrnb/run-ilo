@@ -17,6 +17,7 @@ export interface RaceEvent {
   organizerEmail?: string
   registrationUrl?: string
   description?: string
+  bannerUrl?: string
   status: RaceStatus
   source: RaceSource
   createdAt: string  // ISO timestamp
@@ -37,6 +38,7 @@ export interface RaceEventRow {
   organizer_email: string | null
   registration_url: string | null
   description: string | null
+  banner_url: string | null
   status: RaceStatus
   source: RaceSource
   created_at: string

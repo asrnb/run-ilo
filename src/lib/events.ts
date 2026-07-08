@@ -24,6 +24,7 @@ function fromRow(row: RaceEventRow): RaceEvent {
     organizerEmail: row.organizer_email ?? undefined,
     registrationUrl: row.registration_url ?? undefined,
     description: row.description ?? undefined,
+    bannerUrl: row.banner_url ?? undefined,
     status: row.status,
     source: row.source,
     createdAt: row.created_at,
@@ -106,6 +107,7 @@ export async function createEvent(
       description: payload.description ?? null,
       route: payload.route ?? null,
       organizer_email: payload.organizerEmail ?? null,
+      banner_url: payload.bannerUrl ?? null,
       status: payload.status,
       source: payload.source,
     })

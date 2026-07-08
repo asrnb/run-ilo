@@ -1,10 +1,13 @@
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
+import Image from 'next/image'
 import { getEventBySlug, getJoinCount } from '@/lib/events'
 import { getPostsByRace } from '@/lib/posts'
+import { getResultsByRace } from '@/lib/results'
 import { formatDate, formatGunStart, formatDistance } from '@/lib/format'
 import EventMapLoader from '@/components/event-map-loader'
 import RaceFeed from '@/components/RaceFeed'
+import RaceResults from '@/components/RaceResults'
 import JoinButton from '@/components/JoinButton'
 import type { Metadata } from 'next'
 
@@ -52,13 +55,22 @@ export async function generateMetadata({ params }: EventPageProps): Promise<Meta
 export default async function EventPage({ params }: EventPageProps) {
   const event = await getEventBySlug(params.slug)
   if (!event) notFound()
-  const [racePosts, joinCount] = await Promise.all([
+  const [racePosts, joinCount, results] = await Promise.all([
     getPostsByRace(event.id).catch(() => []),
     getJoinCount(event.id).catch(() => 0),
+    getResultsByRace(event.id).catch(() => []),
   ])
 
   return (
-    <div className="px-4 py-8 max-w-2xl mx-auto">
+    <div className="max-w-2xl mx-auto">
+      {event.bannerUrl && (
+        <div className="relative w-full h-48 sm:h-64 mb-0">
+          <Image src={event.bannerUrl} alt={event.name} fill className="object-cover" unoptimized />
+          <div className="absolute inset-0 bg-gradient-to-b from-transparent to-predawn-900" />
+        </div>
+      )}
+
+      <div className="px-4 py-8">
       <Link href="/" className="data-label text-predawn-500 hover:text-predawn-200 mb-8 inline-block transition-colors">
         ← All races
       </Link>
@@ -129,8 +141,11 @@ export default async function EventPage({ params }: EventPageProps) {
         <EventMapLoader lat={event.lat} lng={event.lng} name={event.name} route={event.route} />
       </div>
 
+      <RaceResults raceEventId={event.id} initialResults={results} />
+
       <div className="mt-10">
         <RaceFeed raceEventId={event.id} initialPosts={racePosts} />
+      </div>
       </div>
     </div>
   )

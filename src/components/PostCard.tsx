@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { Post } from '@/lib/posts'
+import CommentSection from './CommentSection'
 
 const KIND_LABEL: Record<string, string> = {
   general: 'Post',
@@ -95,6 +96,8 @@ export default function PostCard({ post }: { post: Post }) {
           )
         })}
       </div>
+
+      <CommentSection postId={post.id} initialComments={[]} />
     </div>
   )
 }
