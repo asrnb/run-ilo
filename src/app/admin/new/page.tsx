@@ -7,6 +7,7 @@ import { toSlug } from '@/lib/format'
 import { parseGPX } from '@/lib/gpx'
 import RouteTracerLoader from '@/components/route-tracer-loader'
 import BannerUpload from '@/components/BannerUpload'
+import FBImporter from '@/components/FBImporter'
 
 const DISTANCES = [5, 10, 21, 42]
 const DISTANCE_LABELS: Record<number, string> = {
@@ -89,7 +90,20 @@ export default function AdminNewPage() {
       </Link>
 
       <h1 className="font-display text-3xl font-bold text-gray-900 mb-2">New Race</h1>
-      <p className="text-gray-500 mb-8">Published immediately — no moderation step.</p>
+      <p className="text-gray-500 mb-6">Published immediately — no moderation step.</p>
+
+      <FBImporter onImport={(data) => {
+        setForm(f => ({
+          ...f,
+          name: data.name ?? f.name,
+          date: data.date ?? f.date,
+          gunStart: data.gunStart ?? f.gunStart,
+          distances: data.distances?.length ? data.distances : f.distances,
+          location: data.location ?? f.location,
+          registrationUrl: data.registrationUrl ?? f.registrationUrl,
+          description: data.description ?? f.description,
+        }))
+      }} />
 
       <form onSubmit={handleSubmit} className="space-y-5">
         <div>
