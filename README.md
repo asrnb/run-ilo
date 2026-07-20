@@ -2,7 +2,7 @@
 
 A community directory of runs, fun runs, and marathons in **Iloilo City,
 Philippines**. Browse upcoming races, view route maps, and submit a race for
-admin review...
+admin review....
 
 ## Stacks
 
